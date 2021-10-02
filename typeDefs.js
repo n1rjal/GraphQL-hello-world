@@ -2,6 +2,7 @@ const { gql } = require("apollo-server");
 
 exports.typeDefs = gql`
   type Book {
+    _id: String
     title: String
     author: String
     pages: Int
@@ -18,13 +19,13 @@ exports.typeDefs = gql`
   }
 
   input BookUpdateInfo {
-    book_id: Int
+    book_id: String
     bookInfo: BookInfo
   }
 
   type Mutation {
     addBook(bookInfo: BookInfo!): Book!
     updateBook(bookUpdateInfo: BookUpdateInfo): Book
-    deleteBook(id: Int): Boolean
+    deleteBook(id: String): Boolean
   }
 `;

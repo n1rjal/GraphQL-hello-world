@@ -1,29 +1,46 @@
+const { Book } = require("./models/Book.model");
+
 exports.resolvers = {
   Query: {
-    books: () => books,
+    books: async () => {
+      return await Book.find();
+    },
   },
   Mutation: {
-    addBook: (parent, { bookInfo }, context) => {
+    addBook: async (parent, { bookInfo }, context) => {
       const { author, title, pages } = bookInfo;
-      books.push({ author, title, pages });
-      return { author, title, pages };
+      const book = await Book.create({
+        pages,
+        author,
+        title,
+      });
+      return book;
     },
 
-    updateBook: (parent, { bookUpdateInfo }, context) => {
+    updateBook: async (parent, { bookUpdateInfo }, context) => {
       const {
         book_id,
         bookInfo: { author, title, pages },
       } = bookUpdateInfo;
-      books[book_id] = { author, title, pages };
-      return books[book_id];
+      const book = await Book.findOneAndUpdate(
+        { _id: book_id },
+        {
+          author,
+          title,
+          pages,
+        },
+        {
+          new: true,
+        }
+      );
+      return book;
     },
 
-    deleteBook: (parent, { id }, context) => {
+    deleteBook: async (parent, { id }, context) => {
       try {
-        if (book[id]) {
-          throw "NotFoundError";
-        }
-        books = books.filter((book, index) => index !== id);
+        if (!(await Book.findOne({ _id: id })))
+          throw new Error("Book Not found");
+        const book = await Book.findOneAndDelete({ _id: id });
         return true;
       } catch (e) {
         return false;
