@@ -1,9 +1,13 @@
-const { Book } = require("./models/Book.model");
+const { Book, GraphQL } = require("./models/Book.model");
 
 exports.resolvers = {
   Query: {
-    books: async () => {
-      return await Book.find();
+    books: async (parent, { title }, context, info) => {
+      const searchTitle = new RegExp(title || "", "i");
+      return await Book.find({ title: searchTitle });
+    },
+    getOneBook: async (parent, { id }, context, info) => {
+      return await Book.findOne({ _id: id });
     },
   },
   Mutation: {

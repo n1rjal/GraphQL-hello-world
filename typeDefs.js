@@ -1,15 +1,22 @@
 const { gql } = require("apollo-server");
 
 exports.typeDefs = gql`
-  type Book {
-    _id: String
+  interface BookInterface {
+    title: String
+    author: String
+    pages: Int
+  }
+
+  type Book implements BookInterface {
+    _id: ID!
     title: String
     author: String
     pages: Int
   }
 
   type Query {
-    books: [Book!]!
+    books(title: String): [Book!]!
+    getOneBook(id: String): Book
   }
 
   input BookInfo {
